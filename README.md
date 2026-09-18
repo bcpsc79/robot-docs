@@ -2,89 +2,56 @@
 
 ## 1. Project Overview
 
-### 1.1 Project Name
-> **BCPSC Robot**
+### 1.1 Description
+The BCPSC Robot is a humanoid robot powered by AI, created by students from Bogura Cantonment Public School and College (BCPSC). Designed to act as an intelligent, interactive representative of the school, it can answer questions about BCPSC using a custom knowledge base, hold bilingual conversations (English and Bangla), recognize familiar faces, make eye contact, and use hand gestures.
 
-### 1.2 Description
-> The BCPSC Robot is a humanoid robot powered by AI, created by students from Bogura Cantonment Public School and College (BCPSC). It is designed to act as an intelligent, interactive representative of the school, capable of answering questions about BCPSC's staff, facilities, and institution using a custom knowledge base. It can hold bilingual conversations (English and Bangla), recognize familiar faces, make eye contact, and use hand gestures.
-
-### 1.3 Goals & Objectives
-- Create an intelligent, interactive representative of BCPSC capable of answering questions using school data.
-- Develop real skills in areas like AI, robotics, electronics, and 3D design.
-- Produce a fully functional humanoid robot for exhibitions to showcase student-led engineering in Bangladesh.
+### 1.2 Goals & Objectives
+- Create an intelligent representative of BCPSC capable of answering questions using school data.
+- Develop real skills in AI, robotics, electronics, and 3D design.
+- Produce a fully functional humanoid robot to showcase student-led engineering in Bangladesh.
 - Demonstrate that advanced robotics and AI are achievable with limited resources and strong determination.
 
-### 1.4 Key Features
+### 1.3 Key Features
 - **Bilingual Conversation:** Understands and speaks both English and Bangla natively using offline speech recognition models.
-- **Face Recognition & Eye Tracking:** Uses real-time face detection (YuNet) to track faces and simulate natural gaze behavior and blinking.
-- **Institutional Knowledge (RAG):** Answers questions specifically about BCPSC (staff, teachers, contact info) using a structured Retrieval-Augmented Generation dataset.
-- **Natural Physical Expression:** Features a five-fingered hand with 20+ gestures, a physics-based moving jaw, and eye servos integrated with the AI for expressive communication.
-- **AI Brain:** Runs a FastAPI microservice using Gemini's function-calling API to handle school database lookups, news, weather, and dynamic responses.
+- **Face Recognition & Eye Tracking:** Uses real-time face detection to track faces and simulate natural gaze behavior.
+- **Institutional Knowledge (RAG):** Answers questions specifically about BCPSC using a structured Retrieval-Augmented Generation dataset.
+- **Natural Physical Expression:** Features a five-fingered hand with 20+ gestures, a physics-based moving jaw, and active eye servos.
+- **AI Brain:** Runs a FastAPI microservice using Gemini's function-calling API to dynamically select tools (school lookup, news, hardware control).
 
 ---
 
-## 2. Requirements & Architecture
+## 2. Directory Structure & Documentation
+This repository is organized into a pure file structure to separate domains. Each folder contains its own `README.md` documenting its architecture, challenges, solutions, learnings, and future improvements:
 
-### 2.1 Hardware Components
-- **Microcontrollers:** 
-  - **ESP32 (Main):** Manages eye and jaw servos, processes JSON commands from Raspberry Pi.
-  - **ESP8266:** Dedicated controller for the five finger servos.
-  - **ESP32 (Drive System):** Controls DC motors for mobility with a wireless joystick interface and hardware deadman switch.
-- **Processing:** Raspberry Pi 5 handles all AI, vision, speech recognition, and system coordination tasks.
-- **Mechanical:** Custom 3D printed hybrid structure combining EZ-Robot and InMoov platforms.
-- **Power System:** Custom veroboard circuit with a series battery setup and buck converters for safe voltage distribution.
-
-### 2.2 Software & Tools
-- **Speech Recognition:** Vosk (English) and BanglaSpeech2Text (Bangla) running simultaneously offline.
-- **Text-to-Speech:** Coqui TTS (Bangla) and offline TTS models.
-- **Vision Tracking:** YuNet ONNX for face detection, OpenCV CSRT tracker.
-- **AI & Logic:** FastAPI, Gemini function-calling, local RAG pipeline with sentence-transformer embeddings, Redis caching.
-- **Firmware:** C++ using ArduinoJson, ESPAsyncWebServer for REST APIs.
+- **[`/Software/`](./Software/README.md)** - Documentation for the Raspberry Pi 5 vision, speech, AI brain, and API microservice.
+- **[`/Firmware/`](./Firmware/README.md)** - Documentation for the C++ code running on the ESP32 and ESP8266 microcontrollers.
+- **[`/Electronics/`](./Electronics/README.md)** - Documentation for the veroboard power distribution and voltage schemas.
+- **[`/Mechanical Design/`](./Mechanical%20Design/README.md)** - Documentation for the 3D models and hybrid structural design.
 
 ---
 
-## 3. Team Contributions
+## 3. Team & Contributions
 
-- **Raiyan Bin Rashid:** Software Lead & AI System Development (AI brain, RAG, Speech, microservice, hand gesture coding).
-- **Jotirmoy Bhowmik:** Software & System Integration (Movement control logic, face recognition, hardware-software syncing).
-- **Farsad E Hossain:** Hardware Architecture, 3D Design & Mechanical Preparation (Full 3D modeling, printing, structural assembly).
-- **Naif Bin Nasim:** Hardware & Power Distribution (Safe power circuits, soldering, component wiring).
-- **Fairuz Lubna Karim:** Visual Design & Presentation (Visual finishing for exhibition).
-- **Nahin Rahman:** Hardware Support (Assembly, installation, and troubleshooting).
-
----
-
-## 4. Technical Challenges & Solutions
-
-### 4.1 Hardware Challenges
-- **Challenge:** Merging two different open-source humanoid platforms (EZ-Robot & InMoov) into a single cohesive, symmetrical structure.
-- **Solution:** Complete redesign of joints and mounting points through iterative 3D printing and fit testing.
-
-### 4.2 Software Challenges
-- **Challenge:** Audio feedback loop (microphone picking up the robot's own TTS output).
-- **Solution:** Managed timing relationships between TTS playback and STT capture so the system pauses listening while speaking.
-- **Challenge:** Misrecognition of Bangla proper nouns (names of teachers).
-- **Solution:** Developed a `PostSTTProcessor` using Levenshtein distance, SequenceMatcher, and semantic embeddings to correct text before AI processing.
-
-### 4.3 AI & Integration
-- **Challenge:** Preventing the AI from generating incorrect or made-up information about the school.
-- **Solution:** Implemented a robust RAG pipeline relying exclusively on local, verified JSON databases before consulting online models.
+- **Raiyan Bin Rashid:** Software Lead & AI System Development
+- **Jotirmoy Bhowmik:** Software & System Integration
+- **Farsad E Hossain:** Hardware Architecture, 3D Design & Mechanical Preparation
+- **Naif Bin Nasim:** Hardware & Power Distribution
+- **Fairuz Lubna Karim:** Visual Design & Presentation
+- **Nahin Rahman:** Hardware Support
 
 ---
 
-## 5. Directory Structure
-This repository organizes the project into the following key domains:
+## 4. Project Timeline (211 Days)
 
-- `/Electronics/` - Power distribution schemas, veroboard layouts, and wiring diagrams.
-- `/Firmware/` - C++ code for the ESP32 and ESP8266 microcontrollers.
-- `/Mechanical Design/` - 3D models and printing specifications.
-- `/Software/` - Raspberry Pi 5 vision, speech, AI brain, and API microservice codebase.
+- **Phase 1: Research & Planning (July - Aug 2025)** - Studied EZ-Robot/InMoov, defined robot capabilities, planned the 5-layer architecture.
+- **Phase 2: Hardware Development (Aug - Oct 2025)** - Completed 3D modeling, printing, and assembly. Built the veroboard power system.
+- **Phase 3: Software & AI Development (Sep - Dec 2025)** - Iterated Brain 1 (Ollama), Brain 2 (RAG & PostSTT), and Brain 3 (Gemini Function Calling API).
+- **Phase 4: Integration & Testing (Nov 2025 - Jan 2026)** - Solved the audio feedback loop, connected Raspberry Pi to ESP32 over JSON protocol.
+- **Phase 5: Optimization & Final Deployment (Jan - Feb 23, 2026)** - Codebase organized, docs written, ready for Science Fair exhibition.
 
 ---
 
-## 6. Future Improvements
-
-- **More Natural Movement:** Expand gesture libraries, introduce coordinated upper-body motion, and improve gaze context awareness.
-- **Better Speech Quality:** Fine-tune Bangla acoustic models to local accents and implement speaker diarization.
-- **Battery Management:** Integrate a battery management system (BMS) with real-time monitoring and hot-swappable packs.
-- **Mobile Application:** Develop a dedicated mobile app for non-technical users to control and configure the robot easily.
+## 5. Overarching Learnings
+- **Continuous Coordination:** Because hardware and software were developed simultaneously, decisions in one domain constantly affected the other. The team learned to communicate changes across dependencies quickly and clearly.
+- **Handling Leadership Gaps:** The team learned that a complex project doesn't pause when senior direction is unavailable; self-organization and peer-coordination are critical.
+- **Ruthless Prioritization:** The requirement to have an exhibition-ready robot by a fixed date imposed discipline, teaching the team to defer non-essential improvements and focus purely on stability.
