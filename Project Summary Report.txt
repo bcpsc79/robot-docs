@@ -1,0 +1,952 @@
+Complete Project Summary Report
+BCPSC Robot
+Project Duration : 211 days
+
+1
+
+TABLE OF CONTENTS
+
+2
+
+1. INTRODUCTION
+
+4
+
+2. PROJECT OVERVIEW
+
+5
+
+3. PROJECT TIMELINE (211 DAYS BREAKDOWN)
+
+6
+
+4. SYSTEM ARCHITECTURE
+
+7
+
+5. PERSON -WISE CONTRIBUTIONS
+
+11
+
+6. TECHNICAL CHALLENGES FACED
+
+14
+
+7. SOLUTIONS & IMPROVEMENTS
+
+15
+
+8.
+
+17
+
+WHAT WE LEARNED FROM THIS PROJECT
+
+9. FUTURE IMPROVEMENTS
+
+20
+
+10. CONCLUSION
+
+21
+
+1. INTRODUCTION
+On July 27, 2025, a group of students from Bogura Cantonment Public School and College (BCPSC) started
+building something unique for their school: a fully functional, AI -powered humanoid robot.
+The BCPSC Robot was not created to meet a class requirement or copy an existing design. The team
+believed that students from a school in Bogura, Bangladesh, could create something truly impressive. The
+robot could recognize faces, understand speech in both
+English and Bangla, respond intelligently to
+questions, move its hands and eyes smoothly, and navigate its surroundings. This belief guided every
+decision made over the next 211 days.
+The goal of the project was to show that robotics and artificial intelligence are not just for well
+-funded
+research institutions or tech companies. By combining 3D
+-printed hardware, open -source AI models,
+locally hosted language systems, and custom electro
+nics, the team aimed to prove that meaningful
+engineering is achievable with limited resources, as long as there is enough determination and technical
+skill.
+The vision for the BCPSC Robot had three main objectives. First, to create a robot that could act as an
+intelligent, interactive representative of the school, capable of answering questions about BCPSC's staff,
+facilities, and institution using a knowledge base built specifically from school data. Second, to create a
+platform for genuine learning, where each team member would develop real skills in areas they had never
+explored before. Third, to produce something that could stand in an exhibition, showcasin
+g both the
+school and what student -led engineering in Bangladesh can achieve.
+Bogura Cantonment Public School and College was the only sponsor and institutional supporter of this
+project. Their support made the work possible, and the robot was designed from the start to carry the
+institution's name and reputation.
+
+3
+
+2. PROJECT OVERVIEW
+The BCPSC Robot is a humanoid robot powered by AI. It's designed to interact with people in a natural,
+smart, and responsive way. It listens to questions in both English and Bangla, understands the inquiries,
+and responds with speech. It recognizes familia r faces and greets them personally. It follows faces with
+its eyes, moves its hands with gestures while speaking, and moves around using a wheeled base. When
+asked about Bogura Cantonment Public School and College, including details about its staff, teache rs,
+governing body, contact info, or institutional aspects, it answers from a structured knowledge base made
+from BCPSC's own data. For general knowledge, current news, and questions outside the school
+database, it connects through a layered AI system that can access online models when necessary and
+works offline when the internet is not available.
+In summary, the BCPSC Robot acts as an intelligent, bilingual, interactive assistant. It can hold
+conversations, recognize who it is talking to, and represent its institution.
+
+Key Features
+The robot has several key features that set it apart from a basic demonstration project.
+•
+
+•
+
+•
+
+•
+
+Bilingual conversation is central to its system. The robot understands and responds in both
+English and Bangla. It uses offline speech recognition models for each language, running at the
+same time in separate threads. The Bangla text -to-speech output uses a specific voice mode l for
+natural-sounding speech.
+Face recognition and eye tracking give the robot real awareness of the people in front of it.
+YuNet face detection runs in real time on a Raspberry Pi 5. This information feeds into a
+behavioral state machine that keeps the robot's eyes following whoever it looks at, complete with
+blinkin g and subtle gaze shifts to make interactions feel more natural.
+Institutional knowledge is managed through a Retrieval -Augmented Generation system based
+entirely on BCPSC's own structured data. This includes staff lists, teacher information, governing
+body records, and school contact details. The robot can accurately answer specific question s
+about real people and departments without generating false information.
+Natural physical expression comes from a five-fingered hand capable of over twenty different
+gestures, a jaw that moves in a physics -based manner when speaking, and eye servos that move
+smoothly per human gaze behavior. These parts are integrated with the AI system, allowing the
+robot to gesture while talking and respond physically to its actions.
+
+Hardware Summary
+The robot's design is a hybrid created by analyzing and combining features from two open -source
+humanoid platforms: EZ -Robot and InMoov. Every structural component was custom 3D modeled,
+printed, tested, adjusted until the assembly met the team's standards for strength, symmetry, and
+mechanical reliability.
+The computing core operates on a Raspberry Pi 5 . This unit handles all AI processing, vision tasks,
+speech recognition, and system coordination. A wheeled base provides mobility. It is controlled by an
+ESP32 microcontroller that manages a PWM differential drive system, features a browser-based wireless
+4
+
+joystick interface, and has a hardware deadman switch that cuts motor power if the controller
+disconnects.
+Facial expressions are controlled by a second ESP32 , acting as the main controller. This device drives the
+eye and jaw servos directly and sends hand gesture commands over WiFi to an ESP8266 , which manages
+the five finger servos independently. The entire multi -microcontroller system communicates using serial
+JSON commands and HTTP REST calls over a local WiFi network created by the ESP32.
+Power is supplied through a custom -designed and hand -soldered veroboard circuit. This ensures the
+correct voltage reaches every component, built from scratch to guarantee safe power delivery and circuit
+reliability during operation.
+
+Software Summary
+The software architecture consists of five interconnected layers, from low -level motor control firmware to
+cloud -connected AI services.
+At the hardware level, C++ firmware on the ESP32 and ESP8266 microcontrollers manages all servo
+control, motor operation, WiFi communication, and gesture execution. This is complex, with the eye
+servo implementing four behavioral states (fixating, saccadin g, scanning, glancing) and employing
+Exponential Moving Average smoothing and microsaccade simulation. The jaw's movement is based on a
+physics model for realistic behavior.
+The vision layer operates on the Raspberry Pi, using Python to create a detection -to-actuation pipeline.
+This includes face detection with YuNet ONNX, face tracking with OpenCV's CSRT tracker, pose
+estimation, gaze mapping, signal smoothing, and serial communication to th e servo controller, all
+happening in a continuous real -time loop.
+The speech layer runs two offline speech -to-text recognizers at once. It post-processes the recognized
+text using fuzzy string matching to correct any misheard Bangla names and synthesizes responses using
+offline text-to-speech models for both languages.
+The AI brain evolved through three generations during the project. The final production version is a
+FastAPI microservice built around Gemini's function -calling API. The language model automatically
+selects the right tool —whether it's for a school database lookup, new s retrieval, web search, or weather—
+based on user questions. This setup includes Redis caching, Server -Sent Events streaming for quick
+responses, Prometheus metrics for monitoring, and a structured admin permission gate to prevent
+hardware commands from ex ecuting without explicit authorization.
+The school knowledge base is a structured dataset of BCPSC records, indexed by teacher’s name, role
+and blood group . The dataset is collected from http://bcpsc.edu.bd/ It uses sentence -transformer
+embeddings for semantic search with queries that do not match specific keywords.
+
+5
+
+3. PROJECT TIMELINE (~211 Days )
+Phase 1: Research & Planning (July 27
+
+– August 2025)
+
+•
+
+Studied existing humanoid robots (EZ -Robot, InMoov) to design a hybrid structure.
+
+•
+
+Defined robot capabilities: bilingual speech, face recognition, school knowledge, and physical
+gestures.
+
+•
+
+Planned the five -layer architecture guiding hardware and software development.
+
+Phase 2: Hardware Development (August
+
+– October 2025)
+
+•
+
+Farsad completed 3D modeling, printing, and assembly of hybrid humanoid structure.
+
+•
+
+Naif built and soldered the custom veroboard power distribution system.
+
+•
+
+Nahin assisted with hardware installation, integration, and troubleshooting.
+
+•
+
+Wheeled base, body, and mechanical modules fully assembled by late October.
+
+Phase 3: Software & AI Development (September
+
+– December 2025)
+
+•
+
+Brain 1: Initial AI with local Ollama model, basic movement control, and face recognition.
+
+•
+
+Brain 2: Added BCPSC knowledge base, PostSTTProcessor for Bangla names, and multi
+response cascade.
+
+•
+
+Brain 3: Production microservice using Gemini function -calling, Redis caching, SSE streaming,
+and admin confirmation for hardware commands.
+
+•
+
+Raiyan implemented full hand assembly and coding integration for gestures.
+
+Phase 4: Integration & Testing (November 2025
+
+– January 2026)
+
+•
+
+Connected Raspberry Pi AI to ESP32 master controller using reliable serial JSON protocol.
+
+•
+
+Resolved audio feedback loop between TTS and STT.
+
+•
+
+Finalized dual -language offline STT and Bangla TTS synthesis.
+
+Phase 5: Optimization & Final Deployment (January
+
+6
+
+-source AI
+
+– February 23, 2026)
+
+•
+
+Codebase organized with separate virtual environments; documentation written.
+
+•
+
+Robot ready for exhibition: fully functional, bilingual, expressive, face -tracking, and AI -driven.
+
+4. SYSTEM ARCHITE CTURE
+The BCPSC Robot is built across five interconnected layers, spanning physical hardware at the base
+and an AI-driven software brain at the top. Every layer communicates with the layers immediately
+above and below it, forming a continuous pipeline from physical sensing to intelligent response. The
+overall architecture was designed around three guiding principles: offline-first operation, hardware
+safety, and modular separation of concerns, so that any single subsystem can be tested, repaired, or
+upgraded independently.
+
+4.1 Hardware Architecture
+Microcontrollers
+The robot's hardware intelligence is split among three microcontrollers. Each one has a specific role to
+avoid any single controller slowing things down.
+The main microcontroller is an ESP32, which acts as the master controller for the robot's expressive
+systems. It manages the eye and jaw servos, processes incoming serial JSON commands from the
+Raspberry Pi, and sends gesture instructions to the hand contr oller over HTTP. It works in both AP and
+STA WiFi mode, meaning it serves as a wireless access point for the hand controller while also
+connecting to the wider network. All commands from the Raspberry Pi are processed using ArduinoJson
+and sent to the corr ect subsystem —eye, jaw, or hand—with a 100-millisecond lockout period applied
+after each serial command to avoid conflicts between the web and serial interfaces.
+The second microcontroller is an ESP8266, which focuses solely on hand gesture control. It runs a REST
+API on port 80 and manages five individual finger servos —thumb, index, middle, ring, and little finger —
+each mapped to fixed open and closed angles based on actual hardware testing. The ESP8266 has a
+static IP address so the ESP32 master can find it easily.
+The third microcontroller is another ESP32, which handles the drive system. It creates a WiFi access
+point and provides a browser -based dual -joystick controller interface to any connected device. It
+controls two DC drive motors using PWM for differential d rive. It includes a hardware deadman switch: if
+no device connects to its access point for more than 500 milliseconds, the motors stop immediately and
+movement is disabled. This design prevents the robot from moving on its own or rolling if the operator
+loses connection.
+A Raspberry Pi 5 is positioned above the microcontroller layer and serves as the main processor for
+vision and AI tasks. It communicates downward to the ESP32 master using serial USB and a structured
+NDJSON command protocol with acknowledgment and retry lo gic.
+Power System
+The hardware team designed and built the power distribution system from the ground up. They created
+a custom Veroboard circuit to organize all power connections safely and make sure each component
+gets the right operating voltage. The system uses a series battery setup to provide the voltage levels
+needed by the drive motors, while a buck converter lowers the voltage to s afer levels for the
+microcontrollers and servo motors. Strict wiring practices were followed throughout, since one wrong
+7
+
+connection in such a complex circuit could damage the entire system. The team conducted multiple
+tests to confirm connection integrity before attaching powered components.
+Motors and Servos
+The robot uses two DC motors for movement, controlled by an H -bridge driver. This setup allows
+management of both direction and speed through four PWM pins. Steering is done via differential drive —
+reducing the PWM output on one side compared to the other c auses the robot to turn while still moving
+forward.
+The eye servo pans left and right over a calibrated range, driven by an Exponential Moving Average
+smoothing algorithm that adjusts its responsiveness based on the robot's current behavior, creating
+natural -looking gaze movement instead of mechanical snapp ing. The jaw servo uses a physics -based
+motion model with velocity accumulation and damping, resulting in realistic mouth movement during
+speech. The five hand servos operate independently, each moving to precise angles to create distinct
+gestures from a l ibrary of over twenty programmed positions.
+Mechanical Structure
+The physical body of the BCPSC Robot is a hybrid design based on two established open -source
+humanoid platforms —EZ -Robot and InMoov. It combines the best structural features of each into one
+unified frame. All structural components, custom brackets, and bo dy panels were designed in 3D
+modeling software and printed through several iterations, with fit testing and dimensional adjustments
+made along the way.
+The bottom base was designed with a focus on weight distribution, as the humanoid upper body creates
+a high center of gravity that needs to be balanced by the wheeled base for stable movement. The overall
+assembly underwent multiple rounds of symmetry chec ks and structural reinforcement to ensure
+smooth mechanical operation across all joints and moving parts .
+
+4.2 Software Architecture
+Speech -to-Text (STT)
+The speech recognition system runs two simultaneous recognizers within a single audio capture loop.
+This setup allows the robot to understand input in both English and Bangla, without needing the speaker
+to announce their language beforehand. English recognition is managed by Vosk, utilizing a Kaldi
+acoustic model that operates entirely offline. Bangla recognition works in a parallel daemon thread
+using the BanglaSpeech2Text library, also offline. During startup, the system performs ambient no ise
+calibration to set appropriate energy thresholds for the microphone. A key challenge encountered
+during development was audio feedback, as the robot's own TTS output was detected by the
+microphone as new speech input. Careful management of audio stream timing and the relationship
+between playback and capture processes resolved this issue.
+STT systems often mishear Bangla proper nouns. To address this, a dedicated PostSTTProcessor
+processes every recognition output before it reaches the AI brain. This processor applies three correction
+strategies in sequence: Levenshtein edit distance scorin g, SequenceMatcher longest -common 8
+
+subsequence ratio, and optional semantic embedding matching using sentence transformers. The
+combined score from these methods is weighted and compared against a threshold before the corrected
+text is forwarded. This step is crucial for accurate name looku ps in the BCPSC staff database.
+
+AI Brain
+The AI brain has evolved through three distinct generations during the project. The first generation relied
+on a fully offline Ollama local language model with a regex -based intent recognition engine that covered
+nine intent types in English and Bangla Uni code patterns. While it was functional, it lacked awareness of
+school -specific information.
+The second generation introduced a structured knowledge base along with a multi -source response
+method. The system first searches the BCPSC database, then attempts an offline knowledge layer of
+hardcoded facts, and only calls the Gemini 2.0 Flash API as a last resort. Each response includes a source
+label that shows which pipeline generated it, ensuring that the system's reasoning is transparent.
+The third and current generation is built as a FastAPI microservice centered on Gemini's native function calling capability. Instead of pre -classifying every query in code, the language model reads the user's
+input and creates a structured function call. I t selects from registered tools, including school database
+lookup, news retrieval, web search, weather, and hardware device control. The microservice executes
+the selected tool, sends the result back to the model, and the model provides the final natural -language
+response. Hardware control commands are queued and need separate admin confirmation before
+execution, ensuring a safety measure between the AI layer and the physical robot’s movement.
+Retrieval -Augmented Generation (RAG)
+The RAG system gives the robot accurate, grounded knowledge about BCPSC. The knowledge base
+consists of structured JSON datasets that include staff rosters, teacher lists for both the school and
+college sections, governing body members, and institutional c ontact details. At startup, the system
+builds two in -memory indexes from this data: a role index that maps job titles to records and a name
+index that maps lowercase names to records for quick lookups. If an exact match isn’t found, the system
+uses semanti c search with sentence -transformer embeddings and cosine similarity scoring. This setup
+allows common queries, like finding a teacher by name or retrieving contact information, to be
+answered in milliseconds without any API call. Uncommon or unclear querie s still get meaningful
+responses through semantic retrieval.
+Text-to-Speech (TTS)
+The TTS system supports voice output in both English and Bangla. Bangla synthesis uses the Coqui TTS
+library with the mobassir94/bangla -tts model. A text cleaning pipeline removes all non -Bangla Unicode
+characters before synthesis to prevent garbled output from mixed-script input. Synthesized audio is
+cached using a hash of the cleaned text, meaning repeated phrases, like greetings and standard
+responses, load instantly from cache rather than being re -synthesized. For higher -quality output, a
+quantized GGUF Bangla TTS model runs through llama.cpp, striking a good balance between voice
+9
+
+quality and file size on limited hardware. Synthesis runs in a background thread to avoid blocking the
+main conversation loop while generating audio.
+Vision
+The vision system comprises a multi -stage pipeline designed to operate at real -time speeds on the
+Raspberry Pi 5. Frames from the camera are first sent to a YuNet face detector running as an ONNX
+model, which functions at about ten to fifteen frames per se cond at 320 by 240 resolution. This
+resolution was chosen after testing confirmed that 640 by 480 caused unacceptable latency on ARM
+hardware. Between detection frames, a CSRT tracker keeps track of the last known face position,
+preventing visual output fr om flickering when the detector misses a single frame.
+A PersonSelector module identifies the most relevant face in scenes with several people. It uses face size,
+proximity to the center of the frame, and tracking continuity for this purpose. A PoseEstimator then
+derives the subject's approximate gaze directio n from facial landmark geometry. A GazeMapper
+translates this into a target servo angle. A final smoothing filter —using a critically -damped model rather
+than simple exponential smoothing, which caused servo oscillation —converts the mapped angle into a
+stable command sent over serial to the ESP32.
+The system maintains three behavioral states: active tracking when a face is detected, idle sweep with
+randomized blink timing when no face is present, and a smooth return -to-center transition between the
+two. Face recognition runs separately using DeepFac e with Facenet512, creating 512 -dimensional face
+embeddings that are matched against a database of known individuals for identity identification.
+Backend API
+The backend operates as a FastAPI microservice that provides a versioned REST and streaming API for all
+robot intelligence functions. The primary chat endpoint returns responses via Server -Sent Events
+streaming, with a target latency of under 200 milliseco nds for cached queries. Redis caching, along with
+an in-memory fallback, stores recent responses with short time -to-live values to avoid stale answers
+while significantly speeding up repeated queries. Asynchronous parallel tool execution lets multiple
+Gemini function calls run at the same time using Python's asyncio framework when the model requests
+more than one tool at once. Prometheus metrics are available at a dedicated endpoint, tracking request
+counts, latency histograms, and tool call frequency for o bservability. The entire service is containerized
+using Docker Compose with a Redis sidecar, and Kubernetes manifests are available for production
+deployment. A complete test suite includes unit tests with mocked Gemini responses and integration
+tests that validate end -to-end latency against defined performance targets.
+
+10
+
+5. PERSON -WISE CONTRIBUTION
+5.1 Raiyan Bin Rashid
+Software Lead & AI System Development
+Areas of Work:
+•
+
+Designed and implemented the full AI interaction pipeline (STT → AI processing → TTS)
+
+•
+
+Integrated Text -to-Speech with natural voice output
+
+•
+
+Built and rebuilt the Robot Brain system (multiple versions)
+
+•
+
+Implemented RAG for school -specific knowledge
+
+•
+
+Developed a FastAPI -based Robot Brain microservice with structured API endpoints
+
+•
+
+Connected vision tracking with eye movement control
+
+•
+
+Managed Raspberry Pi deployment and microcontroller communication
+
+•
+
+Made the full hand assembly and completed the hand movement coding
+
+Major Contributions:
+•
+
+Modular AI system design for smooth real -time conversation
+
+•
+
+Reduced latency and improved response stability for live demos
+
+•
+
+Safety control before executing hardware commands
+
+•
+
+Structured system prompts with tone, limitations, and fallback behavior
+
+Challenges:
+•
+
+Managing real-time listening and speaking without overlap
+
+•
+
+Handling noisy audio and misrecognized Bangla names
+
+•
+
+Preventing incorrect AI -generated information
+
+•
+
+Maintaining system stability during live demonstrations
+
+5.2 Jotirmoy Bhowmik
+Software & System Integration
+Areas of Work:
+
+11
+
+•
+
+Movement Control System (motor control logic and command execution flow)
+
+•
+
+Face Recognition System development and integration
+
+•
+
+Hardware –Software integration
+
+•
+
+Assisted in Body Assembly
+
+•
+
+Technical support to team members
+
+Major Contributions:
+•
+
+Ensured stable and responsive movement control
+
+•
+
+Integrated face recognition for known person detection
+
+•
+
+Connected software with hardware so commands work correctly
+
+Challenges:
+•
+
+Hardware -software synchronization
+
+•
+
+Multiple iterations for movement calibration
+
+•
+
+Optimizing real -time face recognition performance
+
+•
+
+Efficient system design with limited resources
+
+5.3 Farsad E Hossain
+Hardware Architecture, 3D Design & Mechanical Preparation
+Areas of Work:
+•
+
+Full 3D modeling and structural design of robot body
+
+•
+
+3D printing of all structural and custom parts
+
+•
+
+Bottom base construction and wheel system design
+
+•
+
+Mechanical integration of all hardware modules
+
+•
+
+Architecture modification and structural improvements
+
+Major Contributions:
+•
+
+Designed a hybrid structure from EZ -Robot and InMoov
+
+•
+
+Printed and modified custom parts for strength and fit
+
+•
+
+Constructed the bottom base with proper balance and weight distribution
+
+•
+
+Performed multiple testing rounds and structural corrections
+
+Challenges:
+•
+
+Combining two robot structures into one cohesive system
+
+•
+
+Maintaining symmetry, durability, and smooth movement
+
+•
+
+Independent hardware preparation required careful problem -solving
+
+5.4 Naif Bin Nasim
+Hardware & Power Distribution
+12
+
+Areas of Work:
+•
+
+Robot movement hardware setup
+
+•
+
+Hand movement hardware support
+
+•
+
+Full power distribution system design and implementation
+
+•
+
+Hand -soldered veroboard circuit from scratch
+
+Major Contributions:
+•
+
+Built a safe and organized power distribution system
+
+•
+
+Ensured correct wiring for all motors and components
+
+•
+
+Maintained circuit safety during testing
+
+Challenges:
+•
+
+Small wiring errors could damage the circuit
+
+5.5 Fairuz Lubna Karim
+Visual Design & Presentation
+Areas of Work:
+•
+
+Overall visual design of the robot
+
+•
+
+Preparing the robot for exhibition display
+
+Major Contributions:
+•
+
+Made the robot presentable in the Science Fair 2025 at BCPSC
+
+5.6 Nahin Rahman
+Hardware Support
+Areas of Work:
+•
+
+Assisted in hardware preparation and assembly
+
+•
+
+Helped with installation and troubleshooting
+
+Major Contributions:
+•
+
+Supported hands -on hardware tasks
+
+•
+
+Helped complete hardware setup within project timeline
+
+Challenges:
+•
+•
+
+13
+
+Limited guidance at times; team had to self -coordinate
+
+6. TECHNICAL CHALLENGES FACED
+Hardware Challenges
+The biggest hardware challenge was merging two different open -source humanoid platforms, EZ -Robot
+and InMoov, into one physical structure. These systems were not designed to work together, so
+combining them required a complete redesign of joints, mounting points, and proportions instead of
+just simple assembly. Keeping the structure symmetrical while ensuring durability and smooth
+movement at all joints involved several rounds of 3D printing, physical testing, corrections, and
+reprinting before the frame me t acceptable standards.
+Software Challenges
+The main software challenge was audio feedback. The robot's text -to-speech voice was being picked up
+by the microphone and processed as new input, creating a loop that interrupted conversations. Solving
+this issue needed careful timing and management of th e playback and capture processes. Another
+related challenge was the consistent misrecognition of Bangla proper nouns by the speech -to-text
+engine, which made name lookups against the BCPSC database unreliable until a dedicated correction
+layer was created and integrated.
+AI Challenges
+The key AI challenge was stopping the language model from producing incorrect or made -up
+information about BCPSC, including details about its staff and structure. Since general -purpose
+language models lack specific knowledge about a school in Bogura, Bangl adesh, each school -related
+response had to rely on the local knowledge base through RAG before reaching the model. Establishing
+reliable confidence thresholds to determine when the RAG result was good enough and when to switch
+to an online API required ext ensive tuning. Creating a system that detected intent and language equally
+well in English and Bangla Unicode without misrouting queries added more complexity.
+Power and Safety Issues
+Designing a safe power distribution system for a robot with multiple microcontrollers, servo motors, and
+DC motors, each needing different voltage and current, was a critical engineering task. A single wiring
+error could damage the entire circuit. Several connection errors were found and fixed during testing
+before the system was stable and safe. On the software side, a hardware deadman switch was included
+in the drive system to automatically cut motor power if the wireless controller connection dropped,
+preventing the robot from moving without an active operator.
+Resource Limitations
+The entire project operated under tight resource constraints. Hardware components, computing power,
+and development time were limited, so every decision had real costs. Running computer vision tasks on
+a Raspberry Pi 5 required careful choices about resolu tion—using 320 by 240 pixels instead of 640 by
+480—because the higher resolution caused latency that made real -time tracking impossible on ARM
+hardware. The need to maintain separate Python virtual environments due to conflicts among computer
+vision, audio , and AI libraries added to the deployment complexity. Throughout the project, the team
+14
+
+consistently sought solutions that were not only functional but also lightweight and efficient enough to
+run reliably on the available hardware.
+
+7. Solutions & Improvements
+7.1 How Problems Were Identified
+Most problems in the BCPSC Robot project were identified through direct testing rather than theoretical
+analysis. Hardware issues surfaced during physical assembly and powered testing rounds, where
+incorrect wiring, poor servo calibration, or structural im balance produced immediate and observable
+failures. Software issues emerged during live system runs — the audio feedback loop, for instance, was
+not anticipated during design but became immediately apparent the first time TTS and STT ran
+simultaneously. AI accuracy problems were discovered through test queries, where the language
+model's tendency to generate plausible but incorrect information about BCPSC became clear as soon as
+school -specific questions were asked. In each case, the team documented what fa iled, traced it to its
+root cause, and built a targeted solution rather than applying broad workarounds.
+7.2 How Problems Were Solved
+The audio feedback problem was resolved by managing the timing relationship between the TTS
+playback process and the STT microphone capture process, ensuring the recognizer was not actively
+listening while the robot was speaking. The Bangla name misrecogni tion problem was solved by building
+a dedicated PostSTTProcessor that applied three complementary string similarity algorithms
+—
+Levenshtein distance, SequenceMatcher ratio, and semantic embedding matching — in sequence,
+correcting STT output before it rea ched any name lookup or database query. Hardware race conditions
+between the serial interface and the web interface were resolved by implementing a 100 -millisecond
+lockout window after every serial command, giving the hardware time to settle before accepti ng further
+instructions. The eye -tracking flicker problem was solved by introducing a CSRT tracker running
+between detection frames, maintaining continuity on the last known face position when the detector
+momentarily failed. Power safety was addressed thr ough a purpose -built veroboard circuit with
+organized, verified wiring, combined with a software deadman switch that cut motor power
+automatically upon controller disconnection.
+7.3 What Improved Over Time
+The project showed consistent improvement in three areas. Response accuracy improved as the
+knowledge base matured — early versions of the robot had no school -specific knowledge and would
+fabricate answers, while later versions grounded every BCPSC -related response in verified data through
+RAG. System stability improved as the serial communication protocol was hardened with ACK and retry
+logic, and as audio pipeline timing was refined. Response speed improved through the introduction of
+Redis caching, offli ne-first knowledge lookup, and audio caching for repeated TTS phrases, reducing
+latency on predictable queries to near -instant levels.
+7.4 Brain Version 1 to Version 3 Evolution
+Brain Version 1 — was fully offline and deterministic. All user input passed through a regex -based intent
+recognition engine that classified queries into one of nine intent types in both English and Bangla, then
+15
+
+routed each to a dedicated handler. Responses were generated by a local Ollama language model
+running the Gemma 2B model on -device. This version was functional and required no internet
+connection, but it had a fundamental limitation: the model had no knowl edge of BCPSC and would
+produce confident but inaccurate answers to any school -specific question.
+Brain Version 2 — addressed this by introducing a structured RAG knowledge base built from real BCPSC
+data. A QueryClassifier detected the language and type of each query, routing it through a cascade —
+first to the school database, then to an offline knowledge layer of har dcoded facts, then to Ollama for
+enhancement, and finally to the Gemini API or News API when all local sources were insufficient. The
+PostSTTProcessor was added at this stage to correct misheard Bangla names before they reached the
+database. Each response carried a source and pipeline label so the system's reasoning path was always
+transparent. The limitation of this version was that the code itself was still making all routing decisions
+— the language model had no agency over which tool or data source to c onsult.
+Brain Version 3 — resolved this by handing decision -making authority to the model itself through
+Gemini's native function -calling API. Rather than the code pre -classifying every query, the model reads
+the user's message and emits a structured function call selecting from r egistered tools — school
+database lookup, weather, news, web search, and hardware device control. The microservice executes
+the selected tool, returns the result, and the model produces the final response within a single streaming
+cycle. This version added production infrastructure that the earlier versions lacked entirely: SSE
+streaming for low -latency output, Redis caching, Prometheus observability metrics, an admin
+confirmation gate for hardware commands, Docker containerization, and a full test suite. T he
+progression across all three versions reflects the project's central lesson — begin with deterministic,
+code-controlled logic to establish reliability, then progressively transfer agency to the model as the
+infrastructure around it matures.
+
+16
+
+8. What We Learned From This Project
+8.1 Technical Learning
+Raiyan Bin Rashid — Software Lead
+Raiyan's technical growth across the 211 days of this project was the most broad in scope, given that he
+was responsible for every layer of the software stack. He developed practical proficiency in building
+production -grade Python backend services using Fa stAPI, managing asynchronous programming with
+asyncio, and structuring REST and streaming APIs for real -world deployment. He learned how Retrieval Augmented Generation works not as an abstract concept but as an engineering problem — how to
+structure a know ledge base, build embedding indexes, tune confidence thresholds, and decide when
+local retrieval is sufficient versus when to escalate to an online model. He gained hands -on experience
+with the Gemini function -calling API and understood the fundamental dif ference between code controlled intent routing and model -controlled tool selection. His work across three generations of the
+robot brain gave him direct experience in system evolution — understanding why an architecture that
+works at one level of complexity breaks at the next, and how to rebuild thoughtfully rather than patch
+repeatedly.
+Jotirmoy Bhowmik — Software & Integration
+Jotirmoy learned how motor control logic translates from code to physical behavior — that a PWM value
+on a screen corresponds to a real force on a wheel, and that the relationship between the two requires
+calibration, testing, and iteration. He gained prac tical experience in hardware -software integration,
+understanding that the boundary between a microcontroller and a software system is not clean and
+requires careful protocol design on both sides. His work on face recognition gave him exposure to
+computer v ision pipelines, embedding -based identity matching, and the performance constraints of
+running inference in real time on limited hardware.
+Farsad E Hossain — Hardware & 3D Design
+Farsad developed the most specialized technical skillset on the team. He learned professional 3D
+modeling and structural design for robotics applications — not decorative modeling, but functional
+design where every dimension affects whether a part fits, ho lds weight, and moves correctly. He learned
+the full 3D printing workflow: designing for printability, accounting for material tolerances, identifying
+structural weak points, and iterating through multiple versions of the same part until it performed
+reliably. Studying EZ -Robot and InMoov gave him a working understanding of how established
+humanoid platforms are engineered, and combining them into a hybrid structure taught him how to
+evaluate, adapt, and improve existing designs rather than simply replicate them.
+Naif Bin Nasim — Power & Electronics
+Naif developed practical skills in electronics and circuit design that are difficult to acquire outside of a
+real project with real consequences. He learned how to read and design power distribution circuits, how
+to solder a veroboard from scratch, and how to organize a multi -component wiring system safely and
+clearly. He learned how different components — microcontrollers, servo motors, DC motors — have
+different voltage and current requirements, and how a distribution system must account for all of them
+17
+
+simultaneously. The testing phase, where connection mistakes were identified and corrected without
+damaging the overall circuit, gave him direct experience in hardware fault diagnosis and safe
+troubleshooting practice.
+Nahin Rahman — Hardware Support
+Nahin gained broad practical exposure to hardware assembly and installation across multiple systems,
+developing hands -on familiarity with the physical construction of a complex robot. He learned how to
+contribute effectively to a technical project without having primary ownership of any single system, and
+how to identify problems and escalate them appropriately during testing.
+8.2 Teamwork Learning
+Coordination
+The BCPSC Robot required hardware and software to be developed simultaneously by different people,
+which meant that decisions made in one domain constantly affected the other. The team learned that
+coordination in this kind of project is not a one -time planning activity but a continuous process. When
+Farsad modified a structural dimension, it affected where Naif could route wiring, which affected where
+Jotirmoy could place sensors, which affected what Raiyan could assume about camera positioning.
+Learning t o communicate changes across these dependencies — quickly and clearly — was a skill the
+team developed through necessity rather than instruction.
+Task Distribution
+Early in the project, task boundaries were not always clearly defined, which led to occasional duplication
+of effort and gaps in ownership. Over time the team naturally settled into a structure where hardware
+and software responsibilities were separated, a nd within each domain, individuals took clear ownership
+of specific subsystems. This organic distribution proved effective because it matched each person's
+emerging strengths to the work that needed doing, rather than assigning roles based purely on initia l
+preference.
+Handling Leadership Gaps
+There were periods during the project when senior direction was limited and team members had to take
+initiative without waiting for instruction. This was particularly noted in the hardware team, where
+assembly and troubleshooting work continued through coo rdination among peers rather than top -down
+management. The team learned that a project of this complexity does not pause when a leader is
+unavailable, and that the ability to self -organize and make reasonable decisions independently is as
+important as any technical skill.
+Working Under Deadline
+The requirement to have a working, exhibition -ready robot by a fixed date imposed a discipline on the
+project that no internal process could have replicated. The team learned to prioritize ruthlessly —
+deferring improvements that were desirable but not ess ential, and concentrating effort on whatever was
+most likely to fail under exhibition conditions. They learned that a robot that works reliably at eighty
+18
+
+percent of its intended capability is more valuable at a demonstration than one that works brilliantly half
+the time.
+8.3 Personal Growth
+Beyond technical skills and teamwork, the project produced a kind of personal growth in each member
+that is harder to quantify but no less real. Every member of the team encountered problems they did not
+know how to solve at the moment they encountered the m, and solved them anyway. Farsad completed
+the entire mechanical construction independently, which required not just skill but sustained self reliance over months of work. Raiyan rebuilt the robot's AI brain three times, which required the
+willingness to acknowledge that a previous version was insufficient and start again with a clearer
+understanding. Naif worked in a domain where a single mistake could undo weeks of work, and learned
+to carry that responsibility calmly. Jotirmoy operated at the boundary b etween two worlds — software
+and hardware — where the rules of each domain sometimes conflict, and learned to navigate that
+ambiguity without losing ground in either direction.
+The project also gave the entire team a realistic understanding of what engineering actually involves. It
+is not a linear process from idea to finished product. It is a repeated cycle of building, testing, failing,
+understanding why, and building again — and the willingness to complete that cycle without losing
+motivation is perhaps the most important thing any of them took away from the 211 days they spent
+building the BCPSC Robot.
+
+19
+
+9. FUTUR E IMPROVEMENTS
+9.1 More Natural Movement
+The current movement system is functional but operates within visible mechanical constraints. Future
+development should focus on making the robot's physical behavior feel more organic and less
+predictable. This includes expanding the hand gesture library w ith smoother transition animations
+between positions, introducing coordinated upper -body movement so that arm, hand, and head motion
+occur together in response to speech rather than independently, and refining the walking or drive
+system to produce smoothe r acceleration and deceleration curves. The eye and jaw physics models,
+while already implementing velocity and damping, could be further tuned with more sophisticated
+behavioral patterns — longer fixation durations, more varied saccade amplitudes, and con text-aware
+gaze direction that responds to where sound is coming from rather than purely where a face appears
+visually.
+9.2 Better Speech Quality
+The current Bangla TTS output, while functional, does not yet match the naturalness of a human
+speaker. On the recognition side, the STT system would benefit from a fine -tuned Bangla acoustic model
+trained on local accents and school -context vocabulary, which would reduce the frequency of proper
+noun misrecognitions and decrease dependence on the post -proces sing correction layer. Implementing
+speaker diarization — the ability to distinguish between different speakers during a conversation —
+would also allow the robot to maintain more coherent multi -person interactions during public
+demonstrations.
+9.3 Improved Battery System
+The current power system, while safely designed, requires manual charging and does not provide the
+robot or its operator with real -time information about remaining capacity. A meaningful improvement
+would be the integration of a battery management system t hat monitors cell voltage, estimates
+remaining runtime, and communicates charge level to the software layer so the robot can alert
+operators before power becomes critically low. Moving toward a hot -swappable battery configuration —
+where a depleted battery pack can be replaced without powering down the entire system — would
+significantly improve the robot's suitability for extended exhibition use. Exploring higher energy -density
+battery options and optimizing the power draw of the servo and motor systems wo uld further extend
+operational duration between charges.
+9.4 Mobile Application Control
+The current control interface is browser -based and primarily intended for technical operators. A
+dedicated mobile application would make the robot significantly more accessible to non -technical users
+including teachers, administrative staff, and students. The application should provide real -time status
+monitoring showing the robot's current operational state, active speech recognition language, and
+battery level. It should allow authorized users to update the knowledge base, add new known faces to
+the recognition database, and configure behavioral parameters without accessing the underlying code.
+For demonstrations and exhibitions, a simplified presentation mode within the application could allow a
+20
+
+designated operator to cue specific responses or direct the robot's attention, providing greater control
+over the interaction experience in front of an audience.
+
+10. CONCLUSION
+On July 27, 2025, a group of students from Bogura Cantonment Public School and College sat down with
+an idea that had no guarantee of success. Two hundred and eleven days later, they had built a fully
+functional AI -powered humanoid robot — one capable of r ecognizing faces, understanding speech in
+two languages, answering questions about its own institution, moving its hands and eyes with natural
+fluid motion, and holding a real conversation with the people standing in front of it.
+The journey was not straightforward. The team rebuilt the robot's AI brain three times. They redesigned
+structural components that failed under physical testing. They debugged audio pipelines at midnight,
+traced wiring faults in live circuits, and rewrote software systems they had already considered finished.
+Every major capability the robot demonstrates today exists because a specific problem was
+encountered, understood, and solved — not because the path was clear from the beginning.
+What the BCPSC Robot represents is therefore something larger than the robot itself. It is a
+demonstration that advanced engineering is not the exclusive domain of universities, technology
+companies, or well -funded research institutions. It is proof that s tudents from a school in Bogura,
+Bangladesh, working with limited resources, shared hardware, and their own developing skills, can
+produce something technically sophisticated and genuinely meaningful. The project touched embedded
+systems, computer vision, natural language processing, multilingual speech, electronics, structural
+design, and production software architecture — not superficially, but with the depth that comes from
+building something that actually had to work.
+For Bogura Cantonment Public School and College, this project carries particular significance. The robot
+was built to represent the institution — to carry its name, answer questions about its people, and stand
+as evidence of what its students are capable o f. It sets a precedent for the kind of work that is possible
+within these walls, and establishes a foundation that future students can build upon, improve, and take
+further. The knowledge, the codebase, the hardware designs, and the lessons documented in t his report
+do not belong only to the team that created them. They belong to the institution, and to every student
+who comes after.
+The BCPSC Robot is not a finished product. It is a beginning .
+
+The End
+21
+
+
