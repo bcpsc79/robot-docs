@@ -4,7 +4,7 @@ Project Duration : 211 days
 
 1
 
-TABLE OF CONTENTS
+TABLE OF CONTENTS
 
 2
 
@@ -50,7 +50,7 @@ WHAT WE LEARNED FROM THIS PROJECT
 
 21
 
-1. INTRODUCTION
+1. INTRODUCTION
 On July 27, 2025, a group of students from Bogura Cantonment Public School and College (BCPSC) started
 building something unique for their school: a fully functional, AI -powered humanoid robot.
 The BCPSC Robot was not created to meet a class requirement or copy an existing design. The team
@@ -80,7 +80,7 @@ institution's name and reputation.
 
 3
 
-2. PROJECT OVERVIEW
+2. PROJECT OVERVIEW
 The BCPSC Robot is a humanoid robot powered by AI. It's designed to interact with people in a natural,
 smart, and responsive way. It listens to questions in both English and Bangla, understands the inquiries,
 and responds with speech. It recognizes familia r faces and greets them personally. It follows faces with
@@ -130,7 +130,7 @@ speech recognition, and system coordination. A wheeled base provides mobility. I
 ESP32 microcontroller that manages a PWM differential drive system, features a browser-based wireless
 4
 
-joystick interface, and has a hardware deadman switch that cuts motor power if the controller
+joystick interface, and has a hardware deadman switch that cuts motor power if the controller
 disconnects.
 Facial expressions are controlled by a second ESP32 , acting as the main controller. This device drives the
 eye and jaw servos directly and sends hand gesture commands over WiFi to an ESP8266 , which manages
@@ -167,7 +167,7 @@ embeddings for semantic search with queries that do not match specific keywords.
 
 5
 
-3. PROJECT TIMELINE (~211 Days )
+3. PROJECT TIMELINE (~211 Days )
 Phase 1: Research & Planning (July 27
 
 – August 2025)
@@ -259,7 +259,7 @@ Codebase organized with separate virtual environments; documentation written.
 
 Robot ready for exhibition: fully functional, bilingual, expressive, face -tracking, and AI -driven.
 
-4. SYSTEM ARCHITE CTURE
+4. SYSTEM ARCHITE CTURE
 The BCPSC Robot is built across five interconnected layers, spanning physical hardware at the base
 and an AI-driven software brain at the top. Every layer communicates with the layers immediately
 above and below it, forming a continuous pipeline from physical sensing to intelligent response. The
@@ -299,7 +299,7 @@ needed by the drive motors, while a buck converter lowers the voltage to s afer 
 microcontrollers and servo motors. Strict wiring practices were followed throughout, since one wrong
 7
 
-connection in such a complex circuit could damage the entire system. The team conducted multiple
+connection in such a complex circuit could damage the entire system. The team conducted multiple
 tests to confirm connection integrity before attaching powered components.
 Motors and Servos
 The robot uses two DC motors for movement, controlled by an H -bridge driver. This setup allows
@@ -338,7 +338,7 @@ STT systems often mishear Bangla proper nouns. To address this, a dedicated Post
 processes every recognition output before it reaches the AI brain. This processor applies three correction
 strategies in sequence: Levenshtein edit distance scorin g, SequenceMatcher longest -common 8
 
-subsequence ratio, and optional semantic embedding matching using sentence transformers. The
+subsequence ratio, and optional semantic embedding matching using sentence transformers. The
 combined score from these methods is weighted and compared against a threshold before the corrected
 text is forwarded. This step is crucial for accurate name looku ps in the BCPSC staff database.
 
@@ -376,7 +376,7 @@ responses, load instantly from cache rather than being re -synthesized. For high
 quantized GGUF Bangla TTS model runs through llama.cpp, striking a good balance between voice
 9
 
-quality and file size on limited hardware. Synthesis runs in a background thread to avoid blocking the
+quality and file size on limited hardware. Synthesis runs in a background thread to avoid blocking the
 main conversation loop while generating audio.
 Vision
 The vision system comprises a multi -stage pipeline designed to operate at real -time speeds on the
@@ -410,7 +410,7 @@ tests that validate end -to-end latency against defined performance targets.
 
 10
 
-5. PERSON -WISE CONTRIBUTION
+5. PERSON -WISE CONTRIBUTION
 5.1 Raiyan Bin Rashid
 Software Lead & AI System Development
 Areas of Work:
@@ -502,7 +502,7 @@ Hardware –Software integration
 
 Assisted in Body Assembly
 
-•
+•
 
 Technical support to team members
 
@@ -593,7 +593,7 @@ Independent hardware preparation required careful problem -solving
 Hardware & Power Distribution
 12
 
-Areas of Work:
+Areas of Work:
 •
 
 Robot movement hardware setup
@@ -672,7 +672,7 @@ Challenges:
 
 Limited guidance at times; team had to self -coordinate
 
-6. TECHNICAL CHALLENGES FACED
+6. TECHNICAL CHALLENGES FACED
 Hardware Challenges
 The biggest hardware challenge was merging two different open -source humanoid platforms, EZ -Robot
 and InMoov, into one physical structure. These systems were not designed to work together, so
@@ -711,7 +711,7 @@ hardware. The need to maintain separate Python virtual environments due to confl
 vision, audio , and AI libraries added to the deployment complexity. Throughout the project, the team
 14
 
-consistently sought solutions that were not only functional but also lightweight and efficient enough to
+consistently sought solutions that were not only functional but also lightweight and efficient enough to
 run reliably on the available hardware.
 
 7. Solutions & Improvements
@@ -753,7 +753,7 @@ Brain Version 1 — was fully offline and deterministic. All user input passed t
 recognition engine that classified queries into one of nine intent types in both English and Bangla, then
 15
 
-routed each to a dedicated handler. Responses were generated by a local Ollama language model
+routed each to a dedicated handler. Responses were generated by a local Ollama language model
 running the Gemma 2B model on -device. This version was functional and required no internet
 connection, but it had a fundamental limitation: the model had no knowl edge of BCPSC and would
 produce confident but inaccurate answers to any school -specific question.
@@ -779,7 +779,7 @@ infrastructure around it matures.
 
 16
 
-8. What We Learned From This Project
+8. What We Learned From This Project
 8.1 Technical Learning
 Raiyan Bin Rashid — Software Lead
 Raiyan's technical growth across the 211 days of this project was the most broad in scope, given that he
@@ -817,7 +817,7 @@ clearly. He learned how different components — microcontrollers, servo motors,
 different voltage and current requirements, and how a distribution system must account for all of them
 17
 
-simultaneously. The testing phase, where connection mistakes were identified and corrected without
+simultaneously. The testing phase, where connection mistakes were identified and corrected without
 damaging the overall circuit, gave him direct experience in hardware fault diagnosis and safe
 troubleshooting practice.
 Nahin Rahman — Hardware Support
@@ -855,7 +855,7 @@ deferring improvements that were desirable but not ess ential, and concentrating
 most likely to fail under exhibition conditions. They learned that a robot that works reliably at eighty
 18
 
-percent of its intended capability is more valuable at a demonstration than one that works brilliantly half
+percent of its intended capability is more valuable at a demonstration than one that works brilliantly half
 the time.
 8.3 Personal Growth
 Beyond technical skills and teamwork, the project produced a kind of personal growth in each member
@@ -875,7 +875,7 @@ building the BCPSC Robot.
 
 19
 
-9. FUTUR E IMPROVEMENTS
+9. FUTUR E IMPROVEMENTS
 9.1 More Natural Movement
 The current movement system is functional but operates within visible mechanical constraints. Future
 development should focus on making the robot's physical behavior feel more organic and less
@@ -915,7 +915,7 @@ the recognition database, and configure behavioral parameters without accessing 
 For demonstrations and exhibitions, a simplified presentation mode within the application could allow a
 20
 
-designated operator to cue specific responses or direct the robot's attention, providing greater control
+designated operator to cue specific responses or direct the robot's attention, providing greater control
 over the interaction experience in front of an audience.
 
 10. CONCLUSION
@@ -949,4 +949,3 @@ The BCPSC Robot is not a finished product. It is a beginning .
 The End
 21
 
-
