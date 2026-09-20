@@ -3,9 +3,8 @@
 |  1 |              1 | Robotics BD                | Raspberry Pi, Camera, Touch Display, Speaker                  |     33,785.00 |                               |
 |    |                |                            | Courier Charge                                                |        110.00 |                               |
 |  2 |              2 | Robotics BD                | Wheel, Servo Motor, Servo Tester, Soldering Station tip set   |      7,553.00 |                               |
-|    |                |                            | Courier Charge                                                |        110.00 |                               |
 |  3 |              3 | Spider Technologies        | 3D Print                                                      |     17,234.00 |                               |
-|  4 |              4 | Radio Gear                 | 300 RPM Gear Motor, Motor Gear                                |      6,130.00 |                               |
+|  4 |              4 | Radio Gear BD              | 300 RPM Gear Motor, Motor Gear                                |      6,130.00 |                               |
 |  5 |              5 | Alamgir Mechanariz         | Screw                                                         |        120.00 |                               |
 |  6 |              6 | Mobile City                | Ulamzi UM, USB Converter                                      |      1,650.00 |                               |
 |  7 |              7 | Global Brand PLC           | Power Bank                                                    |      5,800.00 |                               |
@@ -25,4 +24,5 @@
 | 21 |             21 | Shifa Electronics          | ESP32 Dev Module                                              |        550.00 |                               |
 | 22 |             22 | Spider Technologies        | 3D Printing (Hand and Head parts)                             |      1,100.00 |                               |
 | 23 |             23 | Robotics BD                | ESP32 Dev Module                                              |        500.00 |                               |
+|    |                |                            | Courier Charges                                               |        110.00 |                               |
 |    |                |                            | **Total Expenditure**                                         | **89,092.00** |                               |
