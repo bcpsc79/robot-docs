@@ -22,13 +22,5 @@ The BCPSC Robot features a hybrid physical frame. Rather than an out-of-the-box 
 ## Challenges & Solutions
 1. **Structural Merging:** Merging the two different platforms meant simple assembly wasn't an option. **Solution:** Complete structural redesign of the joints. Sustained rounds of physical fit testing were employed to correct imbalances before finalizing the printable files.
 
-## Learnings
-- **3D Design for Robotics:** Learned professional functional 3D design. This involved designing for printability, accounting for material tolerances, identifying structural weak points, and iterating through multiple versions of a part until it performed reliably under weight.
-- **Adapting Designs:** Gained a working understanding of how established humanoid platforms are engineered, learning how to evaluate, adapt, and improve existing designs rather than simply replicating them.
-
-## Future Improvements
-- **Coordinated Motion:** Introducing coordinated upper-body movement so that arm, hand, and head motions occur together smoothly in response to speech, rather than moving independently.
-- **Expanded Gesture Library:** Adding smoother transition animations between hand positions to reduce visible mechanical constraints.
-
 ## Branches Reference
-- `Robot-Body-Files`: Contains all the relevant 3D models and STL files used for printing.
+- `Components\3D Components\Robot 3d files`: Contains all the relevant 3D models and STL files used for printing.
