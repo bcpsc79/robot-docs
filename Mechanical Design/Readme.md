@@ -2,7 +2,7 @@
 
 ## Overview
 The BCPSC Robot features a hybrid physical frame. Rather than an out-of-the-box kit, it is a custom-built chassis created by merging the best architectural qualities of two well-known open-source humanoid platforms: **EZ-Robot** and **InMoov**.
-
+ 
 **Lead Mechanical Designer:** Farsad E Hossain
 
 ## Design Details
